@@ -49,6 +49,7 @@ h1, h2, h3, h4, h5, h6 {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	backdrop-filter: blur(0.3em);
 }
 
 #content-small {
@@ -72,6 +73,26 @@ h1, h2, h3, h4, h5, h6 {
 	height: 90%;
 }
 
-.component > img:not(.temperature) {
-	height: 40%;
+.component img:not(.temperature) {
+	height: 100%;
+}
+
+.gauage-outer {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+.component-desc {
+	/* Make them face outwards instead of inwards */
+	transform: rotate(180deg);
+	writing-mode: vertical-lr;
+	text-align: center;
+	font-size: 187%;
+	margin: 0;
+	font-weight: normal;
+}
+
+.component-desc-wrapper {
+	display: flex;
 }

@@ -53,29 +53,29 @@ const MAX_TEMPERATURE_NUM = 120;
 const MIN_TEMPERATURE_NUM = 0;
 const HALF_TEMPERATURE_NUM = (MAX_TEMPERATURE_NUM - MIN_TEMPERATURE_NUM) / 2;
 
-let up = true;
-let num = 0;
-let x = setInterval(() => {
-    if (num < MIN_TEMPERATURE_NUM || num > MAX_TEMPERATURE_NUM) up = !up;
-    num += (up ? 1 : -1);
-    updateTemperatures(num);
-}, 10);
+// let up = true;
+// let num = 0;
+// let x = setInterval(() => {
+//     if (num < MIN_TEMPERATURE_NUM || num > MAX_TEMPERATURE_NUM) up = !up;
+//     num += (up ? 1 : -1);
+//     updateTemperatures(num);
+// }, 10);
 
 
-updateTemperatures(40);
-function updateTemperatures(temperature) {
+for (let i = 0; i < temperatures.length; i++) {
+    updateTemperatures(temperatures[i], Math.random() * MAX_TEMPERATURE_NUM);
+}
+function updateTemperatures(element, temperature) {
     const height = temperature.map(MIN_TEMPERATURE_NUM, MAX_TEMPERATURE_NUM, MIN_TEMPERATURE, MAX_TEMPERATURE);
     const c1 = temperature <= HALF_TEMPERATURE_NUM ? MIN_COLOR : MID_COLOR;
     const c2 = temperature <= HALF_TEMPERATURE_NUM ? MID_COLOR : MAX_COLOR;
     let percent = clampPercent(temperature / (MAX_TEMPERATURE_NUM - MIN_TEMPERATURE_NUM))
     if (percent > 0.5) percent -= 0.5;
     const blend = blendColors(c1, c2, percent.map(0, 0.5, 0, 1));
-    for (let temp of temperatures) {
-        temp.innerHTML = baseSVG
-            .replace(/%HEIGHT%/g, height)
-            .replace(/%HEIGHT2%/g, height + 10)
-            .replace(/%COLOR%/g, blend);
-    }
+    element.innerHTML = baseSVG
+        .replace(/%HEIGHT%/g, height)
+        .replace(/%HEIGHT2%/g, height + 10)
+        .replace(/%COLOR%/g, blend);
 }
 
 function clampPercent(num) {
