@@ -96,3 +96,40 @@ h1, h2, h3, h4, h5, h6 {
 .component-desc-wrapper {
 	display: flex;
 }
+
+/* ----- Charts ----- */
+#chart {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+#specs {
+	display: flex;
+	justify-content: space-between;
+	align-items: top;
+}
+
+#specs > h1 {
+	font-size: 300%;
+}
+
+#specs > * {
+	margin-bottom: 0;
+}
+
+#back {
+	top: 0;
+	left: 0;
+	margin-left: 1%;
+	margin-top: 1%;
+	border-radius: 1em;
+	background-color: #282A36D5;
+	width: 5vw;
+	height: 5vw;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
