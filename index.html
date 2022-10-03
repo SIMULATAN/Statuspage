@@ -2,6 +2,7 @@
     <head>
         <title>System monitor</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
         <script src="script.js" defer></script>
         <link rel="stylesheet" href="style.css">
     </head>
@@ -14,9 +15,9 @@
             <div id="content">
                 <div id="content-small">
                     <div class="component">
-                        <div class="gauage-outer">
+                        <div class="gauge-outer">
                             <a href="chart.html?component=cpu">
-                                <img src="img/Gauage1.png"/>
+                                <canvas id="cpu-gauge" class="gauge"></canvas>
                             </a>
                             <div class="component-desc-wrapper">
                                 <h6 class="component-desc">i7-9700k</h6>
@@ -24,9 +25,9 @@
                         </div>
                     </div>
                     <div class="component">
-                        <div class="gauage-outer">
+                        <div class="gauge-outer">
                             <a href="chart.html?component=gpu">
-                                <img src="img/Gauage2.png"/>
+                                <canvas id="gpu-gauge" class="gauge"></canvas>
                             </a>
                             <div class="component-desc-wrapper">
                                 <h6 class="component-desc">RTX2070s</h6>
@@ -34,9 +35,9 @@
                         </div>
                     </div>
                     <div class="component">
-                        <div class="gauage-outer">
+                        <div class="gauge-outer">
                             <a href="chart.html?component=ram">
-                                <img src="img/Gauage3.png"/>
+                                <canvas id="ram-gauge" class="gauge"></canvas>
                             </a>
                             <div class="component-desc-wrapper">
                                 <h6 class="component-desc">TridentZ 16GB</h6>

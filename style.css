@@ -77,7 +77,7 @@ h1, h2, h3, h4, h5, h6 {
 	height: 100%;
 }
 
-.gauage-outer {
+.gauge-outer {
 	display: flex;
 	justify-content: center;
 	width: 100%;
@@ -132,4 +132,10 @@ h1, h2, h3, h4, h5, h6 {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.gauge {
+	padding-top: 2em;
+	height: 13vw;
+	width: 15vw;
 }

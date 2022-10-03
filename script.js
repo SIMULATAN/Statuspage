@@ -91,3 +91,41 @@ function blendColors(colorA, colorB, amount) {
     const b = Math.round(bA + (bB - bA) * amount).toString(16).padStart(2, '0');
     return '#' + r + g + b;
 }
+
+// Gauges
+const gauges = ["cpu", "gpu", "ram"].map(m => document.getElementById(m + "-gauge")).filter(e => e != null);
+
+updateGauges();
+function updateGauges() {
+    const opts = {
+        lines: 1,
+        angle: -0.3,
+        lineWidth: 0.2,
+        pointer: {
+            length: 0.9,
+            strokeWidth: 0,
+            color: '#ccc'
+        },
+        limitMax: 'false',
+        percentColors: [[0.0, MIN_COLOR], [0.5, MID_COLOR], [1.0, MAX_COLOR]],
+        strokeColor: '#E0E0E0',
+        generateGradient: true,
+        staticLabels: {
+          font: "10px sans-serif",  // Specifies font
+          labels: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],  // Print labels at these values
+          color: "#FF79C6",  // Optional: Label text color
+          fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+        },
+    };
+    for (let element of gauges) {
+        var gauge = new Gauge(element).setOptions(opts);
+        gauge.maxValue = 100;
+        gauge.animationSpeed = 1;
+       // gauge.setMinValue(0);
+       // gauge.maxValue = 100;
+       // gauge.animationSpeed = 32;
+       // gauge.colorStart = "#FF0000";
+       // gauge.colorStop = "#FF0000";
+        gauge.set(Math.random() * 100);
+    }
+}
