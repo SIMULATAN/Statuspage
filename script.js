@@ -129,3 +129,61 @@ function updateGauges() {
         gauge.set(Math.random() * 100);
     }
 }
+
+const chartElement = document.getElementById("chart");
+updateChart();
+function updateChart() {
+    if (!chart) return;
+    const myChart = new Chart(chartElement, {
+        type: 'line',
+        data: {
+            labels: ['5 min', '', '', '4 min', '', '', '3 min', '', '', '2 min', '', '', '1 min', '', '', '0 sec'],
+            datasets: [{
+                data: [69, 37, 30, 5, 9, 7, 5, 2, 1, 5, 7, 8],
+                backgroundColor: [
+                    '#F8F8F2'
+                ],
+                borderColor: [
+                    'rgba(0, 0, 0, 0)'
+                ],
+                borderWidth: 1,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(189, 147, 249, 0.3)',
+                }
+            }]
+        },
+        options: {
+            plugins: {
+                filler: {
+                    propagate: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.parsed.y + "%"
+                    }
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        color: "#F8F8F2",
+                        callback: (value, index, ticks) => value + "%"
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: "#F8F8F2",
+                        maxTicksLimit: 20
+                    }
+                }
+            },
+            responsive: true,
+        }
+    });
+}

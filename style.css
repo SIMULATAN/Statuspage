@@ -98,7 +98,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ----- Charts ----- */
-#chart {
+#chart-wrapper {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -138,4 +138,11 @@ h1, h2, h3, h4, h5, h6 {
 	padding-top: 2em;
 	height: 13vw;
 	width: 15vw;
+}
+
+#chart {
+	display: block;
+	width: 60vw;
+	height: 35vh;
+	margin: 0;
 }
