@@ -14,7 +14,24 @@ Number.prototype.map = function(in_min, in_max, out_min, out_max) {
     return ((this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min).clamp(out_min < out_max ? out_min : out_max, out_min > out_max ? out_min : out_max);
 }
 
+Storage.prototype.setObj = function(key, obj) {
+    return this.setItem(key, JSON.stringify(obj))
+}
+Storage.prototype.getObj = function(key) {
+    return JSON.parse(this.getItem(key))
+}
+
+const localStorage = window.localStorage;
+
+let usage_cpu = localStorage.getObj("usage_cpu") || [];
+let usage_gpu = localStorage.getObj("usage_gpu") || [];
+let usage_ram = localStorage.getObj("usage_ram") || [];
+
 const clockElement = document.getElementById("clock");
+
+const params = new Proxy(new URLSearchParams(window.location.search), {
+  get: (searchParams, prop) => searchParams.get(prop),
+});
 
 function showTime(){
     const date = new Date();
@@ -53,18 +70,6 @@ const MAX_TEMPERATURE_NUM = 120;
 const MIN_TEMPERATURE_NUM = 0;
 const HALF_TEMPERATURE_NUM = (MAX_TEMPERATURE_NUM - MIN_TEMPERATURE_NUM) / 2;
 
-// let up = true;
-// let num = 0;
-// let x = setInterval(() => {
-//     if (num < MIN_TEMPERATURE_NUM || num > MAX_TEMPERATURE_NUM) up = !up;
-//     num += (up ? 1 : -1);
-//     updateTemperatures(num);
-// }, 10);
-
-
-for (let i = 0; i < temperatures.length; i++) {
-    updateTemperatures(temperatures[i], Math.random() * MAX_TEMPERATURE_NUM);
-}
 function updateTemperatures(element, temperature) {
     const height = temperature.map(MIN_TEMPERATURE_NUM, MAX_TEMPERATURE_NUM, MIN_TEMPERATURE, MAX_TEMPERATURE);
     const c1 = temperature <= HALF_TEMPERATURE_NUM ? MIN_COLOR : MID_COLOR;
@@ -93,50 +98,57 @@ function blendColors(colorA, colorB, amount) {
 }
 
 // Gauges
-const gauges = ["cpu", "gpu", "ram"].map(m => document.getElementById(m + "-gauge")).filter(e => e != null);
+const elements = ["cpu", "gpu", "ram"];
+const gaugeElements = elements.map(m => document.getElementById(m + "-gauge")).filter(e => e != null);
+var elementToGauge = new Map();
 
-updateGauges();
+const opts = {
+    lines: 1,
+    angle: -0.3,
+    lineWidth: 0.2,
+    pointer: {
+        length: 0.9,
+        strokeWidth: 0,
+        color: '#ccc'
+    },
+    limitMax: 'false',
+    percentColors: [[0.0, MIN_COLOR], [0.5, MID_COLOR], [1.0, MAX_COLOR]],
+    strokeColor: '#E0E0E0',
+    generateGradient: true,
+    staticLabels: {
+        font: "10px sans-serif",  // Specifies font
+        labels: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],  // Print labels at these values
+        color: "#FF79C6",  // Optional: Label text color
+        fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+    },
+};
+for (let i = 0; i < gaugeElements.length; i++) {
+    var e = elements[i];
+    let element = gaugeElements[i];
+    var gauge = new Gauge(element).setOptions(opts);
+    gauge.maxValue = 100;
+    gauge.animationSpeed = 50;
+    elementToGauge.set(e, gauge);
+    // gauge.setMinValue(0);
+    // gauge.maxValue = 100;
+    // gauge.colorStart = "#FF0000";
+    // gauge.colorStop = "#FF0000";
+}
+
 function updateGauges() {
-    const opts = {
-        lines: 1,
-        angle: -0.3,
-        lineWidth: 0.2,
-        pointer: {
-            length: 0.9,
-            strokeWidth: 0,
-            color: '#ccc'
-        },
-        limitMax: 'false',
-        percentColors: [[0.0, MIN_COLOR], [0.5, MID_COLOR], [1.0, MAX_COLOR]],
-        strokeColor: '#E0E0E0',
-        generateGradient: true,
-        staticLabels: {
-          font: "10px sans-serif",  // Specifies font
-          labels: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],  // Print labels at these values
-          color: "#FF79C6",  // Optional: Label text color
-          fractionDigits: 0  // Optional: Numerical precision. 0=round off.
-        },
-    };
-    for (let element of gauges) {
-        var gauge = new Gauge(element).setOptions(opts);
-        gauge.maxValue = 100;
-        gauge.animationSpeed = 1;
-       // gauge.setMinValue(0);
-       // gauge.maxValue = 100;
-       // gauge.animationSpeed = 32;
-       // gauge.colorStart = "#FF0000";
-       // gauge.colorStop = "#FF0000";
-        gauge.set(Math.random() * 100);
-    }
+    if (elementToGauge.size == 0) return;
+    elementToGauge.get("cpu").set(usage_cpu);
+    elementToGauge.get("gpu").set(usage_gpu);
+    elementToGauge.get("ram").set(usage_ram);
 }
 
 const chartElement = document.getElementById("chart");
-const chart = new Chart(chartElement, {
+const chart = !chartElement ? undefined : new Chart(chartElement, {
     type: 'line',
     data: {
         labels: ['5 min', '', '', '4 min', '', '', '3 min', '', '', '2 min', '', '', '1 min', '', '', '0 sec'],
         datasets: [{
-            data: [null, null, null, null, 69, 37, 30, 5, 9, 7, 5, 2, 1, 5, 7, 8],
+            data: [],
             backgroundColor: [
                 '#F8F8F2'
             ],
@@ -151,6 +163,9 @@ const chart = new Chart(chartElement, {
         }]
     },
     options: {
+        animation: {
+            duration: 0
+        },
         plugins: {
             filler: {
                 propagate: false,
@@ -183,5 +198,95 @@ const chart = new Chart(chartElement, {
         responsive: true,
     }
 });
+const limit = chart?.data?.labels?.length || 20;
 
 
+/*--------------------- Application Logic -------------------------*/
+const callback = () => {
+    usage_cpu.push(Math.floor(Math.random() * 100));
+    usage_cpu = cutArr(usage_cpu);
+    localStorage.setObj("usage_cpu", usage_cpu);
+
+    usage_gpu.push(Math.floor(Math.random() * 100));
+    usage_gpu = cutArr(usage_gpu);
+    localStorage.setObj("usage_gpu", usage_gpu);
+
+    usage_ram.push(Math.floor(Math.random() * 100));
+    usage_ram = cutArr(usage_ram);
+    localStorage.setObj("usage_ram", usage_ram);
+
+    update();
+}
+// run instantly after loading
+callback();
+setInterval(callback, 2000);
+
+function update() {
+    updateGauges();
+
+    for (let i = 0; i < temperatures.length; i++) {
+        const arr = getVariable(elements[i]);
+        const usage = arr[arr.length - 1];
+        updateTemperatures(temperatures[i], MAX_TEMPERATURE_NUM * (usage / 100));
+    }
+
+    if (chart) {
+        console.log(chart.data);
+        chart.data.datasets.forEach((dataset) => {
+            dataset.data = getChartData(getVariable(params.component));
+        });
+        chart.update();
+    }
+}
+
+function getVariable(name) {
+    switch(name) {
+        case 'cpu':
+            return usage_cpu;
+        case 'gpu':
+            return usage_gpu;
+        case 'ram':
+            return usage_ram;
+    }
+}
+
+function cutArr(arr) {
+    if (arr.length > limit) 
+        arr = arr.slice(arr.length - limit, arr.length + 1);
+    return arr;
+}
+
+function getChartData(arr) {
+    if (arr.length != limit) {
+        initial = arr;
+        arr = new Array(limit - arr.length);
+        arr.fill(null);
+        arr = arr.concat(initial)
+    }
+    return arr;
+}
+
+/*------------ component names -----------*/
+const componentName = document.querySelector("#specs h1");
+const componentDesc = document.querySelector("#specs h2");
+
+if (componentName && componentDesc) {
+    let name;
+    let desc;
+    switch (params.component) {
+        case "cpu":
+            name = "i7-9700k"
+            desc = "8/8 @ 3.6GHz"
+            break;
+        case "gpu":
+            name = "RTX 2070s"
+            desc = "8 GB @ 2.420"
+            break;
+        case "ram":
+            name = "TridentZ 16GB"
+            desc = "3600MHz"
+            break;
+    }
+    componentName.innerHTML = name;
+    componentDesc.innerHTML = desc;
+}
