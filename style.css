@@ -1,3 +1,9 @@
+:root {
+	--bg-color: #282A36D5;
+	--border-radius: 2em;
+	--shadow: 0.5em 0.5em 1.5em 0 rgba(0, 0, 0, 0.5);
+}
+
 body {
 	padding: 0;
 	margin: 0;
@@ -25,8 +31,17 @@ h1, h2, h3, h4, h5, h6 {
 	text-shadow: 0.2rem 0.2rem 1rem rgba(0, 0, 0, 0.69);
 }
 
+#heading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
 #heading > * {
 	text-align: center;
+	display: block;
+	width: fit-content;
 }
 
 #heading > h1 {
@@ -42,8 +57,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #content {
-	background-color: #282A36D5;
-	border-radius: 2em;
+	background-color: var(--bg-color);
+	border-radius: var(--border-radius);
+	box-shadow: var(--shadow);
 	width: 70vw;
 	height: 70vh;
 	display: flex;
@@ -146,4 +162,40 @@ h1, h2, h3, h4, h5, h6 {
 	width: 60vw;
 	height: 35vh;
 	margin: 0;
+}
+
+#overlay {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	display: flex;
+	justify-content: right;
+	align-items: start;
+}
+
+#overlay-inner {
+	cursor: pointer;
+	background-color: var(--bg-color);
+	border: 1px solid red;
+	border-radius: calc(var(--border-radius) / 4);
+	box-shadow: var(--shadow);
+	margin-right: 1vw;
+	margin-top: 1vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1% 2% 1% 1.7%;
+}
+
+#tutorial-text {
+	width: fit-content;
+}
+
+#tutorial-mark {
+	color: white;
+	height: 10vh;
+}
+
+#tutorial-padding {
+	color: rgba(0, 0, 0, 0);
 }

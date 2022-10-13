@@ -53,7 +53,7 @@ function showTime(){
 showTime();
 
 const temperatures = [];
-for (let component of document.getElementsByClassName("component")) {
+for (let component of document.getElementsByClassName("temperature-wrapper")) {
     const newSvg = document.createElement("svg");
     component.appendChild(newSvg);
     temperatures.push(newSvg);
@@ -231,7 +231,6 @@ function update() {
     }
 
     if (chart) {
-        console.log(chart.data);
         chart.data.datasets.forEach((dataset) => {
             dataset.data = getChartData(getVariable(params.component));
         });
@@ -289,4 +288,64 @@ if (componentName && componentDesc) {
     }
     componentName.innerHTML = name;
     componentDesc.innerHTML = desc;
+}
+
+/*---------- Tutorial ------------*/
+const tut_steps = [ "start", "clock", "gauges", "names", "temperatures", "done" ];
+const allStepQuerySelectors = [ "", "#clock", ".gauge", ".component-desc", ".temperature-wrapper" ];
+
+function showTutorial(step) {
+    tut_savedStep = step;
+    localStorage.setItem("tutorial_shown", step);
+    setBorders(step);
+    switch (step) {
+        case "start":
+            setTutorialText("Welcome to the tutorial. Click on this text to go to the next step!");
+            break;
+        case "clock":
+            setTutorialText("This clock displays the current time.");
+            break;
+        case "gauges":
+            setTutorialText("These gauges display the utilization of their respective components.");
+            break;
+        case "names":
+            setTutorialText("Here, you can see the names of your components");
+            break;
+        case "temperatures":
+            setTutorialText("On this thermometer, you can monitor your temperatures.");
+            break;
+        case "done":
+            document.getElementById("overlay").innerHTML = "";
+            break;
+        default:
+            console.error("Step not implemented: " + step);
+            setTutorialText("NO TUTORIAL TEXT");
+    }
+}
+
+function setBorders(step) {
+    for (let i = 0; i < allStepQuerySelectors.length; i++) {
+        const query = allStepQuerySelectors[i];
+        if (!query) continue;
+        const elements = document.querySelectorAll(query);
+        const is = i == tut_steps.indexOf(step);
+        for (let element of elements) {
+            element.style.border = is ? "5px solid red" : "";
+        }
+    }
+}
+
+const tutTextElement = document.getElementById("tutorial-text");
+function setTutorialText(text) {
+    tutTextElement.innerHTML = text;
+}
+
+let tut_savedStep = localStorage.getItem("tutorial_shown");
+if (document.getElementById("overlay")) {
+    showTutorial(tut_savedStep || tut_steps[0]);
+}
+
+function showNextStep() {
+    const index = tut_steps.indexOf(tut_savedStep);
+    showTutorial(tut_steps.length > index + 1 ? tut_steps[index+1] : "done");
 }

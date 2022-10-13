@@ -3,10 +3,16 @@
         <title>System monitor</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
-        <script src="script.js" defer></script>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <div id="overlay">
+            <div id="overlay-inner" onclick="showNextStep()">
+                <img src="img/exclamation-mark.svg" id="tutorial-mark"/>
+                <div id="tutorial-padding">css</div>
+                <p id="tutorial-text"></p>
+            </div>
+        </div>
         <div id="container">
             <div id="heading">
                 <h1 id="clock">Clock's here</h1>
@@ -23,6 +29,7 @@
                                 <h6 class="component-desc">i7-9700k</h6>
                             </div>
                         </div>
+                        <div class="temperature-wrapper"></div>
                     </div>
                     <div class="component">
                         <div class="gauge-outer">
@@ -33,6 +40,7 @@
                                 <h6 class="component-desc">RTX2070s</h6>
                             </div>
                         </div>
+                        <div class="temperature-wrapper"></div>
                     </div>
                     <div class="component">
                         <div class="gauge-outer">
@@ -43,9 +51,11 @@
                                 <h6 class="component-desc">TridentZ 16GB</h6>
                             </div>
                         </div>
+                        <div class="temperature-wrapper"></div>
                     </div>
                 </div>
             </div>
         </div>
+        <script src="script.js"></script>
     </body>
 </html>
