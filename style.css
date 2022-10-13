@@ -80,13 +80,10 @@ h1, h2, h3, h4, h5, h6 {
 .component {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
+	justify-content: center;
+	gap: 5%;
 	align-items: center;
 	height: 100%;
-}
-
-.temperature {
-	height: 90%;
 }
 
 .component img:not(.temperature) {
@@ -152,7 +149,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gauge {
-	padding-top: 2em;
 	height: 13vw;
 	width: 15vw;
 }

@@ -53,8 +53,9 @@ function showTime(){
 showTime();
 
 const temperatures = [];
-for (let component of document.getElementsByClassName("temperature-wrapper")) {
-    const newSvg = document.createElement("svg");
+for (let component of document.getElementsByClassName("component")) {
+    const newSvg = document.createElement("div");
+    newSvg.classList.add("temperature-wrapper");
     component.appendChild(newSvg);
     temperatures.push(newSvg);
 }
@@ -217,8 +218,9 @@ const callback = () => {
 
     update();
 }
-// run instantly after loading
-callback();
+
+update();
+
 setInterval(callback, 2000);
 
 function update() {
@@ -256,7 +258,7 @@ function cutArr(arr) {
 }
 
 function getChartData(arr) {
-    if (arr.length != limit) {
+    if (arr.length <= limit) {
         initial = arr;
         arr = new Array(limit - arr.length);
         arr.fill(null);
@@ -279,7 +281,7 @@ if (componentName && componentDesc) {
             break;
         case "gpu":
             name = "RTX 2070s"
-            desc = "8 GB @ 2.420"
+            desc = "8 GB @ 2.420 MHz"
             break;
         case "ram":
             name = "TridentZ 16GB"
@@ -312,7 +314,7 @@ function showTutorial(step) {
             setTutorialText("Here, you can see the names of your components");
             break;
         case "temperatures":
-            setTutorialText("On this thermometer, you can monitor your temperatures.");
+            setTutorialText("On these thermometers, you can monitor your temperatures.");
             break;
         case "done":
             document.getElementById("overlay").innerHTML = "";
